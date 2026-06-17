@@ -1,0 +1,6 @@
+{
+  "name": "Slip Gaji Fotografer",
+  "description": "Sistem slip gaji digital untuk fotografer/videografer dengan fitur kirim email otomatis, manajemen ganda tanggal pembayaran per bulan, dan unduhan PDF aman.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
