@@ -9,7 +9,9 @@ import {
   saveSMTPSettings,
   getMailLogs,
   addMailLog,
-  saveMailLogs
+  saveMailLogs,
+  deletePhotographer,
+  deletePayslip
 } from "./utils/storage";
 import { PhotographersPanel } from "./components/PhotographersPanel";
 import { CreatePayslipPanel } from "./components/CreatePayslipPanel";
@@ -92,6 +94,11 @@ export default function App() {
 
   // Update Photographers Directory
   const handleUpdatePhotographers = async (updated: Photographer[]) => {
+    // Delete removed photographers
+    const deleted = photographers.filter(p => !updated.find(u => u.id === p.id));
+    for (const d of deleted) {
+      await deletePhotographer(d.id);
+    }
     setPhotographers(updated);
     await savePhotographers(updated);
   };
@@ -105,6 +112,11 @@ export default function App() {
 
   // Update Payslips List (e.g., status changes, deletions)
   const handleUpdatePayslips = async (updated: Payslip[]) => {
+    // Delete removed payslips
+    const deleted = payslips.filter(p => !updated.find(u => u.id === p.id));
+    for (const d of deleted) {
+      await deletePayslip(d.id);
+    }
     setPayslips(updated);
     await savePayslips(updated);
   };
@@ -286,6 +298,7 @@ export default function App() {
           {activeTab === "payslips" && (
             <PayslipsListPanel
               payslips={payslips}
+              photographers={photographers}
               smtpSettings={smtpSettings || { host: "smtp.gmail.com", port: 587, secure: false, user: "", pass: "", senderName: "Studio 18 Picture", senderEmail: "" }}
               onUpdatePayslips={handleUpdatePayslips}
               onAddMailLog={handleAddMailLog}

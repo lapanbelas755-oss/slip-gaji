@@ -7,8 +7,8 @@ const app = express();
 const PORT = 3000;
 
 // Increase request size limits for handling base64 PDF attachments
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
+app.use(express.json({ limit: "200mb" }));
+app.use(express.urlencoded({ limit: "200mb", extended: true }));
 
 // API Endpoint: Send Payslip Email
 app.post("/api/send-payslip", async (req, res) => {

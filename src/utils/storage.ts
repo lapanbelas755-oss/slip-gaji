@@ -38,6 +38,13 @@ export async function savePhotographers(photographers: Photographer[]): Promise<
   }
 }
 
+export async function deletePhotographer(id: string): Promise<void> {
+  const { error } = await supabase.from('photographers').delete().eq('id', id);
+  if (error) {
+    console.error("Error deleting photographer:", error);
+  }
+}
+
 export async function getPayslips(): Promise<Payslip[]> {
   const { data, error } = await supabase.from('payslips').select('*').order('createdat', { ascending: false });
   if (error) {
@@ -96,6 +103,13 @@ export async function savePayslips(payslips: Payslip[]): Promise<void> {
   const { error } = await supabase.from('payslips').upsert(mapped);
   if (error) {
     console.error("Error saving payslips:", error);
+  }
+}
+
+export async function deletePayslip(id: string): Promise<void> {
+  const { error } = await supabase.from('payslips').delete().eq('id', id);
+  if (error) {
+    console.error("Error deleting payslip:", error);
   }
 }
 

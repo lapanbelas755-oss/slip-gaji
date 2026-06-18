@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import React, { useState } from "react";
-import { Payslip, PayslipStatus, SMTPSettings } from "../types";
+import { Payslip, PayslipStatus, SMTPSettings, Photographer } from "../types";
 import { PayslipDocument } from "./PayslipDocument";
 import { Camera, Calendar, Download, Mail, Eye, Search, Filter, CheckCircle, Clock, AlertCircle, X, CheckSquare, ListFilter, Send, History } from "lucide-react";
 import { toCanvas } from "html-to-image";
@@ -8,6 +8,7 @@ import { jsPDF } from "jspdf";
 
 interface PayslipsListPanelProps {
   payslips: Payslip[];
+  photographers: Photographer[];
   smtpSettings: SMTPSettings;
   onUpdatePayslips: (payslips: Payslip[]) => void;
   onAddMailLog: (log: { payslipId: string; recipientEmail: string; recipientName: string; subject: string; status: "success" | "failed"; error?: string }) => void;
@@ -15,6 +16,7 @@ interface PayslipsListPanelProps {
 
 export const PayslipsListPanel: React.FC<PayslipsListPanelProps> = ({
   payslips,
+  photographers,
   smtpSettings,
   onUpdatePayslips,
   onAddMailLog,
@@ -27,8 +29,21 @@ export const PayslipsListPanel: React.FC<PayslipsListPanelProps> = ({
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [sendResult, setSendResult] = useState<{ id: string; success: boolean; message: string; mode?: string } | null>(null);
 
-  // Filter logic
-  const filteredPayslips = payslips.filter((p) => {
+  // Filter logic + Inject latest photographer data dynamically
+  const filteredPayslips = payslips.map((p) => {
+    // Find current active photographer details
+    const currentPhotographer = photographers.find((photo) => photo.id === p.photographerId);
+    if (currentPhotographer) {
+      // Overwrite bank info dynamically so the print/email always uses the newest bank info
+      return {
+        ...p,
+        bankName: currentPhotographer.bankName,
+        bankAccount: currentPhotographer.bankAccount,
+        bankHolder: currentPhotographer.bankHolder,
+      };
+    }
+    return p;
+  }).filter((p) => {
     const matchesSearch =
       p.photographerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.photographerRole.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -85,19 +100,42 @@ export const PayslipsListPanel: React.FC<PayslipsListPanelProps> = ({
         throw new Error("Gagal menemukan elemen preview. Silakan buka detil preview slip terlebih dahulu sebelum melakukan unduh/kirim.");
       }
 
+      // Expand scrollable area temporarily for full PDF capture
+      const tableContainer = document.getElementById(`payslip-table-container-${payslip.id}`);
+      let originalMaxHeight = '';
+      let originalOverflowY = '';
+      if (tableContainer) {
+        originalMaxHeight = tableContainer.style.maxHeight;
+        originalOverflowY = tableContainer.style.overflowY;
+        tableContainer.style.maxHeight = 'none';
+        tableContainer.style.overflowY = 'visible';
+      }
+
       // Enforce high-quality render using html-to-image to support modern CSS like oklch
       const canvas = await toCanvas(targetEl, {
         pixelRatio: 2, // Retains high resolution
         backgroundColor: "#ffffff"
       });
 
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 210; // A4 Width in mm
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      // Restore scrollable state
+      if (tableContainer) {
+        tableContainer.style.maxHeight = originalMaxHeight;
+        tableContainer.style.overflowY = originalOverflowY;
+      }
 
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      // Gunakan JPEG dengan kompresi untuk menghindari error ukuran data (payload) terlalu besar
+      const imgData = canvas.toDataURL("image/jpeg", 0.8);
+      const imgWidth = 210; // Base width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      // Setup PDF dengan format dinamis mengikuti ukuran asli render agar tidak terpotong
+      const pdf = new jsPDF({
+        orientation: "p",
+        unit: "mm",
+        format: [imgWidth, imgHeight]
+      });
+
+      pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
       
       // Convert to Base64 String (for sending over JSON API)
       const base64 = pdf.output("datauristring");

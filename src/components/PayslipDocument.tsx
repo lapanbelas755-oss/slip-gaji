@@ -93,10 +93,10 @@ export const PayslipDocument: React.FC<PayslipDocumentProps> = ({ payslip, conta
               Tidak ada sesi pemotretan dalam periode pembayaran ini.
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-200 text-slate-500 font-semibold">
+            <div id={`payslip-table-container-${payslip.id}`} className="w-full max-h-[320px] overflow-y-auto pr-1">
+              <table className="w-full text-left text-xs border-collapse relative">
+                <thead className="sticky top-0 bg-white z-10 outline outline-1 outline-slate-200">
+                  <tr className="text-slate-500 font-semibold">
                     <th className="p-3 pl-4">Tanggal</th>
                     <th className="p-3">Event / Klien</th>
                     <th className="p-3">Posisi</th>
