@@ -1,7 +1,6 @@
 import express from "express";
 import path from "path";
 import nodemailer from "nodemailer";
-import { createServer as createViteServer } from "vite";
 
 const app = express();
 const PORT = 3000;
@@ -173,6 +172,7 @@ Attachment: ${attachmentName} (${pdfBuffer.length} bytes)
 // Configure Vite or Serve Static Files
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa"

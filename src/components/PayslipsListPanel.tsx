@@ -113,7 +113,7 @@ export const PayslipsListPanel: React.FC<PayslipsListPanelProps> = ({
 
       // Enforce high-quality render using html-to-image to support modern CSS like oklch
       const canvas = await toCanvas(targetEl, {
-        pixelRatio: 2, // Retains high resolution
+        pixelRatio: 1.5, // Reduced from 2 to avoid Vercel payload too large error (413)
         backgroundColor: "#ffffff"
       });
 
@@ -205,7 +205,12 @@ export const PayslipsListPanel: React.FC<PayslipsListPanelProps> = ({
         })
       });
 
-      const resJson = await response.json();
+      let resJson;
+      try {
+        resJson = await response.json();
+      } catch (parseError) {
+        throw new Error(`Server bermasalah (Status: ${response.status}). Payload mungkin terlalu besar atau timeout.`);
+      }
 
       if (response.ok && resJson.success) {
         // Success
