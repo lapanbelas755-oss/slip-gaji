@@ -116,5 +116,6 @@ export const EVENT_CATEGORIES = [
   "Tasyakuran",
   "Resepsi Backup",
   "Resepsi Solo Fighter",
-  "Akad Resepsi 1 Hari"
+  "Akad Resepsi 1 Hari Backup",
+  "Akad Resepsi 1 Hari Solo"
 ];

@@ -82,7 +82,8 @@ export const CreatePayslipPanel: React.FC<CreatePayslipPanelProps> = ({
           "Tasyakuran": 350000,
           "Resepsi Backup": 400000,
           "Resepsi Solo Fighter": 700000,
-          "Akad Resepsi 1 Hari": 600000,
+          "Akad Resepsi 1 Hari Backup": 600000,
+          "Akad Resepsi 1 Hari Solo": 900000,
         };
         setSessionFee(fallbackRates[eventType] || 200000);
       }
@@ -178,7 +179,8 @@ export const CreatePayslipPanel: React.FC<CreatePayslipPanelProps> = ({
   const totalSessionsEarnings = sessions.reduce((acc, s) => acc + s.fee, 0);
   const totalAllowances = allowances.reduce((acc, a) => acc + a.amount, 0);
   const totalDeductions = deductions.reduce((acc, d) => acc + d.amount, 0);
-  const netSalary = totalSessionsEarnings + totalAllowances - totalDeductions;
+  const employeeBaseSalary = currentPhotographer?.baseSalary || 0;
+  const netSalary = employeeBaseSalary + totalSessionsEarnings + totalAllowances - totalDeductions;
 
   // Final Save
   const handleRegisterPayslip = (e: React.FormEvent) => {
@@ -199,7 +201,7 @@ export const CreatePayslipPanel: React.FC<CreatePayslipPanelProps> = ({
       paymentDate,
       periodStart,
       periodEnd,
-      baseSalary: 0,
+      baseSalary: employeeBaseSalary,
       sessions,
       allowances,
       deductions,
@@ -522,6 +524,12 @@ export const CreatePayslipPanel: React.FC<CreatePayslipPanelProps> = ({
             </div>
 
             <div className="space-y-4 text-xs">
+              {employeeBaseSalary > 0 && (
+                <div className="flex justify-between text-slate-400 col-span-2">
+                  <span>Gaji Pokok / Flat:</span>
+                  <span className="font-mono text-slate-200">+{new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(employeeBaseSalary)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-slate-400 col-span-2">
                 <span>Total Gaji Project ({sessions.length}x):</span>
                 <span className="font-mono text-slate-200">+{new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(totalSessionsEarnings)}</span>

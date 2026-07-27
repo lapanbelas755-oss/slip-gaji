@@ -204,6 +204,15 @@ export const PayslipDocument: React.FC<PayslipDocumentProps> = ({ payslip, conta
         </div>
 
         {/* 4. Grand Total Summary */}
+        {payslip.baseSalary > 0 && (
+           <div className="bg-blue-50 border border-blue-100 text-blue-900 rounded-xl p-4 flex justify-between items-center shadow-sm">
+             <div>
+               <div className="text-xs font-bold uppercase tracking-widest">Gaji Pokok / Flat</div>
+               <div className="text-[10px] text-blue-600">Base Retainer Bulanan</div>
+             </div>
+             <div className="text-xl font-mono font-black text-blue-700">+{formatCurrency(payslip.baseSalary)}</div>
+           </div>
+        )}
         <div className="bg-slate-900 text-white rounded-xl p-6 flex flex-col md:flex-row justify-between items-center border border-slate-800 shadow-md">
           <div className="mb-4 md:mb-0 text-center md:text-left">
             <div className="text-xs text-slate-400 uppercase tracking-widest font-semibold">Gaji Bersih Diterima</div>

@@ -240,7 +240,7 @@ export default function App() {
       </section>
 
       {/* Main Workspace Frame container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 flex-grow">
+      <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 flex-grow">
         
         {/* Responsive Tab Bar Navigation links */}
         <div className="flex border-b border-slate-200 mb-8 overflow-x-auto whitespace-nowrap scrollbar-none">

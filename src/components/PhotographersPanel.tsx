@@ -66,7 +66,8 @@ export const PhotographersPanel: React.FC<PhotographersPanelProps> = ({ photogra
         "Tasyakuran": 350000,
         "Resepsi Backup": 400000,
         "Resepsi Solo Fighter": 700000,
-        "Akad Resepsi 1 Hari": 600000,
+        "Akad Resepsi 1 Hari Backup": 600000,
+        "Akad Resepsi 1 Hari Solo": 900000,
       }
     };
 
@@ -130,7 +131,8 @@ export const PhotographersPanel: React.FC<PhotographersPanelProps> = ({ photogra
           "Tasyakuran": 350000,
           "Resepsi Backup": 400000,
           "Resepsi Solo Fighter": 700000,
-          "Akad Resepsi 1 Hari": 600000,
+          "Akad Resepsi 1 Hari Backup": 600000,
+          "Akad Resepsi 1 Hari Solo": 900000,
         };
         return {
           ...p,
@@ -272,6 +274,20 @@ export const PhotographersPanel: React.FC<PhotographersPanelProps> = ({ photogra
                     </option>
                   ))}
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-xs text-slate-400 font-semibold mb-1.5 font-sans">GAJI POKOK BULANAN (FLAT)</label>
+                <div className="relative">
+                  <DollarSign className="absolute left-3 top-3.5 text-slate-500" size={16} />
+                  <input
+                    type="number"
+                    value={baseSalary || ""}
+                    onChange={(e) => setBaseSalary(Number(e.target.value))}
+                    placeholder="Contoh: 2000000 (Kosongkan jika hanya fee project)"
+                    className="w-full bg-slate-950 border border-slate-800 text-sm py-2.5 pl-10 pr-4 rounded-xl text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
               </div>
             </div>
 
@@ -464,7 +480,8 @@ export const PhotographersPanel: React.FC<PhotographersPanelProps> = ({ photogra
                     "Tasyakuran": 350000,
                     "Resepsi Backup": 400000,
                     "Resepsi Solo Fighter": 700000,
-                    "Akad Resepsi 1 Hari": 600000,
+                    "Akad Resepsi 1 Hari Backup": 600000,
+                    "Akad Resepsi 1 Hari Solo": 900000,
                   };
                   return (
                     <tr key={p.id} className="hover:bg-slate-900/40 transition-colors">
