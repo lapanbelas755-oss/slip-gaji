@@ -3,7 +3,7 @@ import path from "path";
 import nodemailer from "nodemailer";
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Increase request size limits for handling base64 PDF attachments
 app.use(express.json({ limit: "200mb" }));
